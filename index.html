@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080808" />
+    <meta name="description" content="A cylindrical motion portfolio." />
+    <title>Polyphase - Motion Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="site-shell" id="site-shell">
+      <header class="site-header">
+        <button class="brand" id="home-button" type="button" aria-label="返回作品首页">
+          <span class="brand-orb" aria-hidden="true"></span>
+          <span>个人作品集</span>
+        </button>
+
+        <div class="view-switch" role="group" aria-label="View mode">
+          <button class="is-active" data-view="spiral" type="button">Spiral</button>
+          <span aria-hidden="true">&#9679;</span>
+          <button data-view="list" type="button">List</button>
+        </div>
+
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open menu" title="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </header>
+
+      <main>
+        <section class="spiral-view" id="spiral-view" aria-label="Spiral works" tabindex="0">
+          <canvas id="spiral-canvas" aria-label="Interactive cylindrical project spiral"></canvas>
+          <div class="scene-vignette" aria-hidden="true"></div>
+          <div class="spiral-meta" aria-hidden="true">
+            <span id="current-number">01</span><i></i><span id="current-year">2026</span>
+          </div>
+        </section>
+
+        <section class="list-view" id="list-view" aria-label="Project list"></section>
+
+        <section class="detail-view" id="detail-view" aria-hidden="true">
+          <div class="detail-hero">
+            <img id="detail-image" alt="" hidden />
+            <button class="round-close" id="detail-close" type="button" aria-label="Close project" title="Close">
+              <span></span><span></span>
+            </button>
+            <div class="detail-heading">
+              <p id="detail-type">Motion identity</p>
+              <h1 id="detail-title">Afterlight</h1>
+            </div>
+            <span class="detail-count" id="detail-count">01 / 10</span>
+          </div>
+          <div class="detail-info">
+            <div>
+              <small>Project</small>
+              <h2 id="detail-project-name">Afterlight</h2>
+            </div>
+            <p id="detail-description"></p>
+            <dl>
+              <div><dt>Year</dt><dd id="detail-year"></dd></div>
+              <div><dt>Role</dt><dd id="detail-role"></dd></div>
+            </dl>
+            <button class="next-project" id="next-project" type="button">
+              <span>Next project</span><b aria-hidden="true">&#8594;</b>
+            </button>
+          </div>
+        </section>
+
+        <section class="about-view" id="about-view" aria-hidden="true">
+          <button class="round-close dark" id="about-close" type="button" aria-label="Close about" title="Close">
+            <span></span><span></span>
+          </button>
+          <small>Polyphase / Independent studio</small>
+          <h1>We shape motion into visual memory.</h1>
+          <div class="about-footer">
+            <p>Direction, moving image and digital experiences for culture-forward brands.</p>
+            <a href="mailto:hello@polyphase.studio">hello@polyphase.studio</a>
+            <span>Singapore / UTC +8</span>
+          </div>
+        </section>
+      </main>
+
+      <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Enable sound" aria-pressed="false" title="Enable sound">
+        <span aria-hidden="true">&#9835;</span>
+      </button>
+
+      <aside class="menu-panel" id="menu-panel" aria-hidden="true">
+        <nav>
+          <button data-nav="works" type="button">Works</button>
+          <button data-nav="about" type="button">About</button>
+          <a href="mailto:hello@polyphase.studio">Contact</a>
+        </nav>
+        <footer><span>Independent motion studio</span><div><a href="#">IG</a><a href="#">BE</a><a href="#">LI</a></div></footer>
+      </aside>
+    </div>
+
+    <div id="live-region" class="sr-only" aria-live="polite"></div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
