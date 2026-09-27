@@ -1,17 +1,17 @@
 import * as THREE from "./vendor/three.module.js";
 
-// Replace the placeholder textures by adding image: "./assets/file.jpg".
+// Replace images by uploading assets/01.jpg through assets/10.jpg in order.
 const projects = [
-  { slug: "afterlight", title: "Afterlight", year: "2026", type: "Motion identity", role: "Direction / Motion", image: "", colors: ["#061917", "#00efad", "#25c7ff", "#eaff7c"], copy: "A luminous identity built from refracted color, slow orbital movement and a pulse that changes with every encounter." },
-  { slug: "soft-static", title: "Soft Static", year: "2026", type: "Title sequence", role: "Design / Type / Motion", image: "", colors: ["#ff4f3b", "#ff9a65", "#16131d", "#f6eee8"], copy: "An opening sequence where broadcast noise behaves like fabric: stretching, folding and briefly revealing the title beneath." },
-  { slug: "glass-house", title: "Glass House", year: "2025", type: "Digital campaign", role: "Art direction / CGI", image: "", colors: ["#e9eff4", "#8a7dff", "#31325f", "#ffffff"], copy: "A study in transparent architecture and impossible reflections, made for a series of looping digital installations." },
-  { slug: "signal-zero", title: "Signal Zero", year: "2025", type: "Visual system", role: "Direction / Generative design", image: "", colors: ["#071728", "#005dff", "#ffdc38", "#54fff3"], copy: "A modular image system that translates live data into bands of color, interruption and accelerating light." },
-  { slug: "still-moving", title: "Still Moving", year: "2025", type: "Film titles", role: "Creative direction / Motion", image: "", colors: ["#f3cd4f", "#f56d2f", "#1b1511", "#f7f0df"], copy: "A quiet set of titles suspended between a still photograph and a moving memory, paced around tiny shifts in light." },
-  { slug: "parallel-bloom", title: "Parallel Bloom", year: "2024", type: "Experimental film", role: "Concept / Direction", image: "", colors: ["#101014", "#fe5bac", "#9567ff", "#70ffd1"], copy: "Synthetic flowers grow in parallel simulations, sharing color and rhythm while never repeating the same form." },
-  { slug: "open-circuit", title: "Open Circuit", year: "2024", type: "Brand film", role: "Design / Animation", image: "", colors: ["#00bed0", "#04191d", "#f4ff75", "#ffffff"], copy: "A kinetic portrait of creative exchange, assembled from charged lines, collisions and sudden moments of calm." },
-  { slug: "echo-field", title: "Echo Field", year: "2024", type: "Spatial graphics", role: "Art direction / Motion", image: "", colors: ["#ded7ff", "#6054d9", "#121119", "#ff7660"], copy: "A responsive field of soft volumes that absorbs sound and returns it as slow, tactile movement." },
-  { slug: "low-tide", title: "Low Tide", year: "2023", type: "Installation film", role: "Direction / Edit", image: "", colors: ["#133b45", "#e4f7df", "#f4a261", "#092228"], copy: "A slow study of a shoreline where each frame arrives with the rhythm of an incoming tide." },
-  { slug: "chromatic-air", title: "Chromatic Air", year: "2023", type: "Brand world", role: "Design / Motion", image: "", colors: ["#37114c", "#ff6eaf", "#9fffe1", "#161021"], copy: "A breathing palette for a brand world built from color, space and small changes in pressure." },
+  { slug: "afterlight", title: "Afterlight", year: "2026", type: "Motion identity", role: "Direction / Motion", imageFile: "./assets/01.jpg", colors: ["#061917", "#00efad", "#25c7ff", "#eaff7c"], copy: "A luminous identity built from refracted color, slow orbital movement and a pulse that changes with every encounter." },
+  { slug: "soft-static", title: "Soft Static", year: "2026", type: "Title sequence", role: "Design / Type / Motion", imageFile: "./assets/02.jpg", colors: ["#ff4f3b", "#ff9a65", "#16131d", "#f6eee8"], copy: "An opening sequence where broadcast noise behaves like fabric: stretching, folding and briefly revealing the title beneath." },
+  { slug: "glass-house", title: "Glass House", year: "2025", type: "Digital campaign", role: "Art direction / CGI", imageFile: "./assets/03.jpg", colors: ["#e9eff4", "#8a7dff", "#31325f", "#ffffff"], copy: "A study in transparent architecture and impossible reflections, made for a series of looping digital installations." },
+  { slug: "signal-zero", title: "Signal Zero", year: "2025", type: "Visual system", role: "Direction / Generative design", imageFile: "./assets/04.jpg", colors: ["#071728", "#005dff", "#ffdc38", "#54fff3"], copy: "A modular image system that translates live data into bands of color, interruption and accelerating light." },
+  { slug: "still-moving", title: "Still Moving", year: "2025", type: "Film titles", role: "Creative direction / Motion", imageFile: "./assets/05.jpg", colors: ["#f3cd4f", "#f56d2f", "#1b1511", "#f7f0df"], copy: "A quiet set of titles suspended between a still photograph and a moving memory, paced around tiny shifts in light." },
+  { slug: "parallel-bloom", title: "Parallel Bloom", year: "2024", type: "Experimental film", role: "Concept / Direction", imageFile: "./assets/06.jpg", colors: ["#101014", "#fe5bac", "#9567ff", "#70ffd1"], copy: "Synthetic flowers grow in parallel simulations, sharing color and rhythm while never repeating the same form." },
+  { slug: "open-circuit", title: "Open Circuit", year: "2024", type: "Brand film", role: "Design / Animation", imageFile: "./assets/07.jpg", colors: ["#00bed0", "#04191d", "#f4ff75", "#ffffff"], copy: "A kinetic portrait of creative exchange, assembled from charged lines, collisions and sudden moments of calm." },
+  { slug: "echo-field", title: "Echo Field", year: "2024", type: "Spatial graphics", role: "Art direction / Motion", imageFile: "./assets/08.jpg", colors: ["#ded7ff", "#6054d9", "#121119", "#ff7660"], copy: "A responsive field of soft volumes that absorbs sound and returns it as slow, tactile movement." },
+  { slug: "low-tide", title: "Low Tide", year: "2023", type: "Installation film", role: "Direction / Edit", imageFile: "./assets/09.jpg", colors: ["#133b45", "#e4f7df", "#f4a261", "#092228"], copy: "A slow study of a shoreline where each frame arrives with the rhythm of an incoming tide." },
+  { slug: "chromatic-air", title: "Chromatic Air", year: "2023", type: "Brand world", role: "Design / Motion", imageFile: "./assets/10.jpg", colors: ["#37114c", "#ff6eaf", "#9fffe1", "#161021"], copy: "A breathing palette for a brand world built from color, space and small changes in pressure." },
 ];
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -309,6 +309,7 @@ const pointer = new THREE.Vector2();
 const textureLoader = new THREE.TextureLoader();
 const cardMeshes = [];
 const textureCanvases = [];
+const projectImages = new Map();
 let activeIndex = 0;
 let hoveredMesh = null;
 let pressedMesh = null;
@@ -364,15 +365,22 @@ function makeTexture(project, index) {
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
-  if (!project.image) return texture;
-  textureLoader.load(project.image, (loaded) => {
+  if (!project.imageFile) return texture;
+  textureLoader.load(project.imageFile, (loaded) => {
     loaded.colorSpace = THREE.SRGBColorSpace;
     loaded.minFilter = THREE.LinearFilter;
     loaded.magFilter = THREE.LinearFilter;
+    projectImages.set(project.slug, loaded);
     cardMeshes.filter((item) => item.userData.project === project).forEach((mesh) => {
       mesh.material.uniforms.uTexture.value = loaded;
       mesh.material.uniforms.uImageSizes.value.set(loaded.image.naturalWidth || loaded.image.width, loaded.image.naturalHeight || loaded.image.height);
     });
+    document.querySelectorAll(`.list-card[data-project="${project.slug}"] img`).forEach((image) => {
+      image.src = project.imageFile;
+    });
+    if (currentProject === project) detailImage.src = project.imageFile;
+  }, undefined, () => {
+    // Keep the generated placeholder until the numbered file is uploaded.
   });
   return texture;
 }
@@ -480,7 +488,7 @@ helixProjects.forEach((project, index) => {
 });
 
 function makeListImage(project, index) {
-  if (project.image) return project.image;
+  if (projectImages.has(project.slug)) return project.imageFile;
   return textureCanvases[index].toDataURL("image/jpeg", 0.88);
 }
 
@@ -488,6 +496,7 @@ projects.forEach((project, index) => {
   const button = document.createElement("button");
   button.className = "list-card";
   button.type = "button";
+  button.dataset.project = project.slug;
   button.innerHTML = `<img src="${makeListImage(project, index)}" alt="" /><span><strong>${project.title}</strong><small>${String(index + 1).padStart(2, "0")} / ${project.year}</small></span>`;
   button.addEventListener("click", () => openProject(project, null));
   listView.append(button);

@@ -9,28 +9,15 @@ Install the **Live Server** extension if you want a one-click local preview, the
 
 ## Replace project images
 
-图片替换位置就是项目里的 `assets/` 文件夹和 `app.js` 顶部的 `projects` 数组。
+图片替换位置就是项目里的 `assets/` 文件夹。10 个项目已经按顺序预留好了文件名，不需要再改代码。
 
-1. 把图片放进 `assets/`，例如 `assets/project-01.jpg`。
-2. 打开 `app.js` 顶部，找到对应项目。
-3. 把它的 `image` 改成图片路径：
+1. 把第一张图命名为 `01.jpg`，放进 `assets/`。
+2. 第二张命名为 `02.jpg`，依次到 `10.jpg`。
+3. 刷新网页，页面会自动读取已经上传的编号图片；还没上传的编号继续显示占位图。
 
-```js
-{
-  slug: "afterlight",
-  title: "Afterlight",
-  image: "./assets/project-01.jpg",
-  // ...
-}
-```
+编号对应关系是：`01.jpg` = Afterlight，`02.jpg` = Soft Static，`03.jpg` = Glass House，一直到 `10.jpg` = Chromatic Air。
 
-The same image is used automatically in the spiral, index view and project detail page. If `image` is omitted, the animated placeholder is shown.
-
-例如，第一张卡片对应 `Afterlight`，修改这一项：
-
-```js
-{ slug: "afterlight", title: "Afterlight", image: "./assets/project-01.jpg", /* ... */ }
-```
+同一张图片会自动显示在螺旋卡片、List 列表和项目详情页。
 
 ## Edit content
 
