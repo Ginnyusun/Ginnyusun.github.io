@@ -48,8 +48,6 @@ button:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 2px s
 body.detail-open .site-header { visibility: hidden; pointer-events: none; }
 .brand { justify-self: start; display: flex; align-items: center; gap: 10px; padding: 0; background: transparent; cursor: pointer; }
 .brand > span:last-child { font-size: 10px; font-weight: 700; }
-.brand-orb { width: 48px; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 66% 24%, #fff 0 7%, transparent 8%), conic-gradient(from 210deg, #050505, #e6e6df, #00e7a0, #15c8ff, #050505 75%); box-shadow: inset -12px -13px 20px rgba(0, 0, 0, 0.9), 0 8px 20px rgba(0, 238, 166, 0.14); transition: transform 350ms ease; }
-.brand:hover .brand-orb { transform: rotate(24deg) scale(1.06); }
 
 .view-switch { display: flex; align-items: center; gap: 11px; padding: 6px 9px; border-radius: 999px; background: rgba(8, 8, 8, 0.56); backdrop-filter: blur(10px); }
 .view-switch button { padding: 3px; background: transparent; color: #777; cursor: pointer; font-size: 14px; }
@@ -139,8 +137,7 @@ body[data-view="list"] .spiral-view { opacity: 0; visibility: hidden; }
 @media (max-width: 640px) {
   :root { --pad: 16px; }
   .site-header { grid-template-columns: auto 1fr auto; }
-  .brand > span:last-child { display: none; }
-  .brand-orb, .menu-toggle { width: 44px; }
+  .menu-toggle { width: 44px; }
   .view-switch { justify-self: center; gap: 7px; }
   .view-switch button { font-size: 12px; }
   .list-view { grid-template-columns: 1fr; padding-top: 88px; }

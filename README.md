@@ -9,9 +9,11 @@ Install the **Live Server** extension if you want a one-click local preview, the
 
 ## Replace project images
 
-1. Put image files inside a new `assets` folder, for example `assets/project-01.jpg`.
-2. Open `app.js`.
-3. Add an `image` field to the matching project:
+图片替换位置就是项目里的 `assets/` 文件夹和 `app.js` 顶部的 `projects` 数组。
+
+1. 把图片放进 `assets/`，例如 `assets/project-01.jpg`。
+2. 打开 `app.js` 顶部，找到对应项目。
+3. 把它的 `image` 改成图片路径：
 
 ```js
 {
@@ -23,6 +25,12 @@ Install the **Live Server** extension if you want a one-click local preview, the
 ```
 
 The same image is used automatically in the spiral, index view and project detail page. If `image` is omitted, the animated placeholder is shown.
+
+例如，第一张卡片对应 `Afterlight`，修改这一项：
+
+```js
+{ slug: "afterlight", title: "Afterlight", image: "./assets/project-01.jpg", /* ... */ }
+```
 
 ## Edit content
 
