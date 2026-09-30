@@ -19,12 +19,19 @@ const imageCandidates = projects.map((_, index) => {
   const number = String(index + 1).padStart(2, "0");
   return ["jpg", "png", "webp", "jpeg"].map((extension) => `./assets/${number}.${extension}?v=${imageRevision}`);
 });
+const videoCandidates = projects.map((_, index) => {
+  const number = String(index + 1).padStart(2, "0");
+  return ["mp4", "webm", "mov"].map((extension) => `./assets/${number}_演示视频.${extension}?v=${imageRevision}`);
+});
 const helixProjects = [...projects, ...projects];
 const spiralView = document.querySelector("#spiral-view");
 const canvas = document.querySelector("#spiral-canvas");
 const listView = document.querySelector("#list-view");
 const detailView = document.querySelector("#detail-view");
 const detailImage = document.querySelector("#detail-image");
+const detailMedia = document.querySelector("#detail-media");
+const detailVideo = document.querySelector("#detail-video");
+const detailMediaName = document.querySelector("#detail-media-name");
 const menuPanel = document.querySelector("#menu-panel");
 const menuToggle = document.querySelector("#menu-toggle");
 const aboutView = document.querySelector("#about-view");
@@ -357,6 +364,26 @@ function setProjectImage(image, index, candidateIndex = 0) {
   image.src = candidates[candidateIndex];
 }
 
+function setProjectVideo(index, candidateIndex = 0) {
+  const candidates = videoCandidates[index];
+  if (!detailVideo || !detailMedia || candidateIndex >= candidates.length) {
+    if (detailVideo) {
+      detailVideo.onerror = null;
+      detailVideo.removeAttribute("src");
+      detailVideo.load();
+    }
+    if (detailMedia) detailMedia.hidden = true;
+    if (detailMediaName) detailMediaName.textContent = "";
+    return;
+  }
+
+  detailMedia.hidden = false;
+  detailMediaName.textContent = candidates[candidateIndex].split("?")[0].split("/").pop();
+  detailVideo.onerror = () => setProjectVideo(index, candidateIndex + 1);
+  detailVideo.src = candidates[candidateIndex];
+  detailVideo.load();
+}
+
 function loadProjectTexture(project, index, candidateIndex = 0) {
   const candidates = imageCandidates[index];
   if (candidateIndex >= candidates.length) return;
@@ -589,6 +616,7 @@ function setDetailContent(project) {
   setProjectImage(detailImage, index);
   detailImage.alt = project.title;
   detailImage.hidden = false;
+  setProjectVideo(index);
   document.title = `${project.title} - Polyphase`;
 }
 

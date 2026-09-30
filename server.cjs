@@ -14,6 +14,9 @@ const mimeTypes = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
+  ".mp4": "video/mp4",
+  ".webm": "video/webm",
+  ".mov": "video/quicktime",
 };
 
 const server = http.createServer((request, response) => {
@@ -32,11 +35,40 @@ const server = http.createServer((request, response) => {
       response.end("Not found");
       return;
     }
-    response.writeHead(200, {
-      "Content-Type": mimeTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream",
+    const contentType = mimeTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream";
+    const range = request.headers.range;
+    if (!range) {
+      response.writeHead(200, {
+        "Content-Type": contentType,
+        "Content-Length": stat.size,
+        "Accept-Ranges": "bytes",
+        "Cache-Control": "no-cache",
+      });
+      fs.createReadStream(filePath).pipe(response);
+      return;
+    }
+
+    const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+    if (!match) {
+      response.writeHead(416, { "Content-Range": `bytes */${stat.size}` });
+      response.end();
+      return;
+    }
+    const start = match[1] ? Number(match[1]) : Math.max(0, stat.size - Number(match[2]) - 1);
+    const end = match[2] ? Math.min(stat.size - 1, Number(match[2])) : stat.size - 1;
+    if (start > end || start >= stat.size) {
+      response.writeHead(416, { "Content-Range": `bytes */${stat.size}` });
+      response.end();
+      return;
+    }
+    response.writeHead(206, {
+      "Content-Type": contentType,
+      "Content-Length": end - start + 1,
+      "Content-Range": `bytes ${start}-${end}/${stat.size}`,
+      "Accept-Ranges": "bytes",
       "Cache-Control": "no-cache",
     });
-    fs.createReadStream(filePath).pipe(response);
+    fs.createReadStream(filePath, { start, end }).pipe(response);
   });
 });
 

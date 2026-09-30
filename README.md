@@ -23,6 +23,12 @@ Install the **Live Server** extension if you want a one-click local preview, the
 
 每次页面打开都会给图片请求加新的版本参数，所以替换 GitHub 上的图片后，刷新页面不会继续使用旧缓存。
 
+## Add project demo videos
+
+如果某个项目有演示视频，把它放进 `assets/` 并命名为 `04_演示视频.mp4` 这种格式，编号与项目图片一致。支持 `.mp4`、`.webm` 和 `.mov`。点击对应项目后，视频会自动出现在详情页图片下方，并使用浏览器原生播放控件。
+
+GitHub 普通仓库单个文件不能超过 100 MB。超过这个限制的视频需要先压缩，或改用 Git LFS / 其他视频托管服务；页面代码仍会自动识别同名视频文件。
+
 ## Edit content
 
 - Project titles, dates and descriptions: the `projects` array at the top of `app.js`.
