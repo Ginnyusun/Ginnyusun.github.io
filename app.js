@@ -407,7 +407,6 @@ const vertexShader = `
 
 const fragmentShader = `
   uniform sampler2D uTexture;
-  uniform float uColorStrength;
   uniform float uZoom;
   uniform vec2 uPlaneSizes;
   uniform vec2 uImageSizes;
@@ -433,7 +432,6 @@ const fragmentShader = `
 
     if (gl_FrontFacing) {
       color = texture2D(uTexture, zoomedUv);
-      color = mix(color, vec4(0.0, 0.0, 0.0, 1.0), uColorStrength);
     } else {
       float offset = 40.0 / 1024.0;
       color = texture2D(uTexture, uv + vec2(-offset, -offset));
@@ -464,7 +462,6 @@ helixProjects.forEach((project, index) => {
   const material = new THREE.ShaderMaterial({
     uniforms: {
       uTexture: { value: projectTextures[projectIndex] },
-      uColorStrength: { value: 0 },
       uZoom: { value: 1 },
       uPlaneSizes: { value: new THREE.Vector2(CARD_WIDTH, CARD_HEIGHT) },
       uImageSizes: { value: new THREE.Vector2(960, 540) },
@@ -522,7 +519,6 @@ function syncPanels() {
 
     const hoverTarget = mesh === hoveredMesh ? 1 : 0;
     mesh.userData.hoverProgress += (hoverTarget - mesh.userData.hoverProgress) * 0.1;
-    mesh.material.uniforms.uColorStrength.value = 0.55 * mesh.userData.hoverProgress;
     mesh.material.uniforms.uZoom.value = 1 + 0.05 * mesh.userData.hoverProgress;
     mesh.material.uniforms.uRevealProgress.value = 1 - 0.05 * mesh.userData.hoverProgress;
     mesh.material.uniforms.uScrollSpeed.value = wheelDeltaY;

@@ -73,7 +73,7 @@ body.detail-open .site-header { visibility: hidden; pointer-events: none; }
 
 .spiral-view { position: fixed; z-index: 2; inset: 0; overflow: hidden; touch-action: none; }
 #spiral-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-.scene-vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at center, transparent 48%, rgba(37, 35, 33, 0.11) 100%); }
+.scene-vignette { display: none; }
 .spiral-meta { position: absolute; left: var(--pad); bottom: 24px; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 10px; pointer-events: none; }
 .spiral-meta i { width: 46px; height: 1px; background: var(--muted); }
 .sound-toggle { position: fixed; z-index: 220; right: var(--pad); bottom: var(--pad); display: grid; place-items: center; width: 52px; aspect-ratio: 1; border-radius: 2px; background: var(--ink); color: var(--paper-bright); cursor: pointer; transition: transform 180ms ease, background 180ms ease, color 180ms ease; }
@@ -106,7 +106,7 @@ body[data-view="list"] .spiral-view { opacity: 0; visibility: hidden; }
 .detail-view.is-open { visibility: visible; clip-path: inset(18px round 14px); }
 .detail-hero { position: relative; height: calc(100dvh - 36px); min-height: 520px; margin: 18px; overflow: hidden; border-radius: 2px; background: var(--ink); }
 .detail-hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.detail-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 48%, rgba(0, 0, 0, 0.6)); pointer-events: none; }
+.detail-hero::after { content: none; }
 .round-close { position: absolute; z-index: 5; top: 22px; right: 22px; width: 50px; aspect-ratio: 1; border-radius: 2px; background: var(--ink); cursor: pointer; transition: transform 220ms ease, background 180ms ease; }
 .round-close:hover { transform: rotate(90deg); background: var(--red); }
 .round-close span { position: absolute; top: 50%; left: 50%; width: 17px; height: 1.5px; background: var(--paper-bright); transform: translate(-50%, -50%) rotate(45deg); }
