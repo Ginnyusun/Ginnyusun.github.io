@@ -503,6 +503,8 @@ const fragmentShader = `
     float sdf = roundedRectSDF(vUv, vec2(reveal), radius);
     float alpha = 1.0 - smoothstep(0.0, 0.002, sdf);
     alpha *= smoothstep(0.1, 1.0, reveal);
+    // Lift only the display shadows in the spiral; source pixels remain untouched.
+    color.rgb = pow(max(color.rgb, vec3(0.0)), vec3(0.74));
     gl_FragColor = vec4(color.rgb, color.a * alpha);
   }
 `;
