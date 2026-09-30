@@ -15,7 +15,10 @@ const projects = [
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const imageRevision = Date.now();
-const imageSources = projects.map((_, index) => `./assets/${String(index + 1).padStart(2, "0")}.jpg?v=${imageRevision}`);
+const imageCandidates = projects.map((_, index) => {
+  const number = String(index + 1).padStart(2, "0");
+  return ["jpg", "png", "webp", "jpeg"].map((extension) => `./assets/${number}.${extension}?v=${imageRevision}`);
+});
 const helixProjects = [...projects, ...projects];
 const spiralView = document.querySelector("#spiral-view");
 const canvas = document.querySelector("#spiral-canvas");
@@ -330,17 +333,42 @@ function placeholderCanvas(index) {
   art.width = 960;
   art.height = 540;
   const ctx = art.getContext("2d");
-  ctx.fillStyle = "#171717";
+  ctx.fillStyle = "#eeede9";
   ctx.fillRect(0, 0, art.width, art.height);
-  ctx.strokeStyle = "#444";
+  ctx.strokeStyle = "#8b8984";
   ctx.lineWidth = 2;
   ctx.strokeRect(3, 3, art.width - 6, art.height - 6);
-  ctx.fillStyle = "#bcbcbc";
+  ctx.fillStyle = "#252321";
   ctx.font = "700 72px Arial, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(`${String(index + 1).padStart(2, "0")}.jpg`, art.width / 2, art.height / 2);
   return art;
+}
+
+function setProjectImage(image, index, candidateIndex = 0) {
+  const candidates = imageCandidates[index];
+  if (candidateIndex >= candidates.length) {
+    image.onerror = null;
+    image.src = placeholderImages[index];
+    return;
+  }
+  image.onerror = () => setProjectImage(image, index, candidateIndex + 1);
+  image.src = candidates[candidateIndex];
+}
+
+function loadProjectTexture(project, index, candidateIndex = 0) {
+  const candidates = imageCandidates[index];
+  if (candidateIndex >= candidates.length) return;
+  textureLoader.load(candidates[candidateIndex], (loaded) => {
+    loaded.colorSpace = THREE.SRGBColorSpace;
+    loaded.minFilter = THREE.LinearFilter;
+    loaded.magFilter = THREE.LinearFilter;
+    cardMeshes.filter((item) => item.userData.project === project).forEach((mesh) => {
+      mesh.material.uniforms.uTexture.value = loaded;
+      mesh.material.uniforms.uImageSizes.value.set(loaded.image.naturalWidth || loaded.image.width, loaded.image.naturalHeight || loaded.image.height);
+    });
+  }, undefined, () => loadProjectTexture(project, index, candidateIndex + 1));
 }
 
 function makeTexture(project, index) {
@@ -350,15 +378,7 @@ function makeTexture(project, index) {
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
-  textureLoader.load(imageSources[index], (loaded) => {
-    loaded.colorSpace = THREE.SRGBColorSpace;
-    loaded.minFilter = THREE.LinearFilter;
-    loaded.magFilter = THREE.LinearFilter;
-    cardMeshes.filter((item) => item.userData.project === project).forEach((mesh) => {
-      mesh.material.uniforms.uTexture.value = loaded;
-      mesh.material.uniforms.uImageSizes.value.set(loaded.image.naturalWidth || loaded.image.width, loaded.image.naturalHeight || loaded.image.height);
-    });
-  });
+  loadProjectTexture(project, index);
   return texture;
 }
 
@@ -469,10 +489,8 @@ projects.forEach((project, index) => {
   button.className = "list-card";
   button.type = "button";
   button.dataset.project = project.slug;
-  button.innerHTML = `<img src="${imageSources[index]}" alt="" /><span><strong>${project.title}</strong><small>${String(index + 1).padStart(2, "0")} / ${project.year}</small></span>`;
-  button.querySelector("img").addEventListener("error", (event) => {
-    event.currentTarget.src = placeholderImages[index];
-  }, { once: true });
+  button.innerHTML = `<img alt="" /><span><strong>${project.title}</strong><small>${String(index + 1).padStart(2, "0")} / ${project.year}</small></span>`;
+  setProjectImage(button.querySelector("img"), index);
   button.addEventListener("click", () => openProject(project, null));
   listView.append(button);
 });
@@ -572,11 +590,7 @@ function setDetailContent(project) {
   document.querySelector("#detail-year").textContent = project.year;
   document.querySelector("#detail-role").textContent = project.role;
   document.querySelector("#detail-count").textContent = `${String(index + 1).padStart(2, "0")} / ${String(projects.length).padStart(2, "0")}`;
-  detailImage.src = imageSources[index];
-  detailImage.onerror = () => {
-    detailImage.onerror = null;
-    detailImage.src = placeholderImages[index];
-  };
+  setProjectImage(detailImage, index);
   detailImage.alt = project.title;
   detailImage.hidden = false;
   document.title = `${project.title} - Polyphase`;

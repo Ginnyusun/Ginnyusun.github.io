@@ -2,6 +2,8 @@
 
 The spiral scene is rendered with the local Three.js files in `vendor/`.
 
+The light reference theme uses `assets/reference-background.png` as the page background. Keep that file in the repository when publishing.
+
 ## Recommended editor
 
 Use [Visual Studio Code](https://code.visualstudio.com/) and open this entire folder.
@@ -11,8 +13,8 @@ Install the **Live Server** extension if you want a one-click local preview, the
 
 图片替换位置就是项目里的 `assets/` 文件夹。页面只认这一组固定文件名，不需要改代码：
 
-1. 把第一张图命名为 `01.jpg`，放进 `assets/`。
-2. 第二张命名为 `02.jpg`，依次到 `10.jpg`。
+1. 把第一张图命名为 `01.jpg`、`01.png`、`01.webp` 或 `01.jpeg`，放进 `assets/`。
+2. 第二张命名为 `02` 加上同样的扩展名，依次到 `10`。
 3. 刷新网页，页面会自动读取对应编号图片；缺少的编号会显示同编号占位图。
 
 编号对应关系是：`01.jpg` = Afterlight，`02.jpg` = Soft Static，`03.jpg` = Glass House，一直到 `10.jpg` = Chromatic Air。
