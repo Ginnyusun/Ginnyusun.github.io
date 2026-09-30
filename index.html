@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#eeede9" />
     <meta name="description" content="A cylindrical motion portfolio." />
     <title>Polyphase - Motion Studio</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20260930-depth" />
   </head>
   <body>
     <div class="site-shell" id="site-shell">
@@ -28,6 +28,13 @@
 
       <main>
         <section class="spiral-view" id="spiral-view" aria-label="Spiral works" tabindex="0">
+          <div class="background-depth" aria-hidden="true">
+            <span class="depth-plane depth-plane-left"></span>
+            <span class="depth-plane depth-plane-right"></span>
+            <span class="depth-column depth-column-one"></span>
+            <span class="depth-column depth-column-two"></span>
+            <span class="depth-horizon"></span>
+          </div>
           <canvas id="spiral-canvas" aria-label="Interactive cylindrical project spiral"></canvas>
           <div class="scene-vignette" aria-hidden="true"></div>
           <div class="spiral-meta" aria-hidden="true">
@@ -94,6 +101,6 @@
     </div>
 
     <div id="live-region" class="sr-only" aria-live="polite"></div>
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./app.js?v=20260930-depth"></script>
   </body>
 </html>
