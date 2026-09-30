@@ -2,7 +2,7 @@
 
 The spiral scene is rendered with the local Three.js files in `vendor/`.
 
-The light reference theme uses `assets/reference-background.png` as the page background. Keep that file in the repository when publishing.
+The light reference theme is generated in CSS: warm white paper, fine grid lines, vertical scan bands and restrained red accents. It does not use the reference screenshot as a page image.
 
 ## Recommended editor
 
