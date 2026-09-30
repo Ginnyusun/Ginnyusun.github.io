@@ -44,6 +44,10 @@ const server = http.createServer((request, response) => {
         "Accept-Ranges": "bytes",
         "Cache-Control": "no-cache",
       });
+      if (request.method === "HEAD") {
+        response.end();
+        return;
+      }
       fs.createReadStream(filePath).pipe(response);
       return;
     }
@@ -68,6 +72,10 @@ const server = http.createServer((request, response) => {
       "Accept-Ranges": "bytes",
       "Cache-Control": "no-cache",
     });
+    if (request.method === "HEAD") {
+      response.end();
+      return;
+    }
     fs.createReadStream(filePath, { start, end }).pipe(response);
   });
 });

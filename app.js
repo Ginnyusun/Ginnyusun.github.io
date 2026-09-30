@@ -334,6 +334,7 @@ let lastTouchX = 0;
 let touchVelocityX = 0;
 let touchMoved = false;
 let currentProject = null;
+let videoRequestId = 0;
 
 function placeholderCanvas(index) {
   const art = document.createElement("canvas");
@@ -364,7 +365,7 @@ function setProjectImage(image, index, candidateIndex = 0) {
   image.src = candidates[candidateIndex];
 }
 
-function setProjectVideo(index, candidateIndex = 0) {
+async function setProjectVideo(index, candidateIndex = 0) {
   const candidates = videoCandidates[index];
   if (!detailVideo || !detailMedia || candidateIndex >= candidates.length) {
     if (detailVideo) {
@@ -377,11 +378,33 @@ function setProjectVideo(index, candidateIndex = 0) {
     return;
   }
 
-  detailMedia.hidden = false;
-  detailMediaName.textContent = candidates[candidateIndex].split("?")[0].split("/").pop();
-  detailVideo.onerror = () => setProjectVideo(index, candidateIndex + 1);
-  detailVideo.src = candidates[candidateIndex];
+  const requestId = ++videoRequestId;
+  detailMedia.hidden = true;
+  detailMediaName.textContent = "";
+  detailVideo.onerror = null;
+  detailVideo.removeAttribute("src");
   detailVideo.load();
+
+  for (let candidate = candidateIndex; candidate < candidates.length; candidate += 1) {
+    try {
+      const response = await fetch(candidates[candidate], { method: "HEAD", cache: "no-store" });
+      if (requestId !== videoRequestId) return;
+      if (!response.ok) continue;
+      detailMedia.hidden = false;
+      detailMediaName.textContent = candidates[candidate].split("?")[0].split("/").pop();
+      detailVideo.onerror = () => setProjectVideo(index, candidate + 1);
+      detailVideo.src = candidates[candidate];
+      detailVideo.load();
+      return;
+    } catch {
+      // Try the next supported filename when a hosting provider rejects HEAD.
+    }
+  }
+
+  if (requestId === videoRequestId) {
+    detailMedia.hidden = true;
+    detailMediaName.textContent = "";
+  }
 }
 
 function loadProjectTexture(project, index, candidateIndex = 0) {
