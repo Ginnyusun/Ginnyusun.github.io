@@ -389,7 +389,8 @@ async function setProjectVideo(index, candidateIndex = 0) {
     try {
       const response = await fetch(candidates[candidate], { method: "HEAD", cache: "no-store" });
       if (requestId !== videoRequestId) return;
-      if (!response.ok) continue;
+      const contentType = response.headers.get("content-type") || "";
+      if (!response.ok || !contentType.toLowerCase().startsWith("video/")) continue;
       detailMedia.hidden = false;
       detailMediaName.textContent = candidates[candidate].split("?")[0].split("/").pop();
       detailVideo.onerror = () => setProjectVideo(index, candidate + 1);
