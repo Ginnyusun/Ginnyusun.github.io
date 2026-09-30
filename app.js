@@ -1,20 +1,21 @@
 import * as THREE from "./vendor/three.module.js";
 
-// Replace images by uploading assets/01.jpg through assets/10.jpg in order.
 const projects = [
-  { slug: "afterlight", title: "Afterlight", year: "2026", type: "Motion identity", role: "Direction / Motion", imageFile: "./assets/01.jpg", colors: ["#061917", "#00efad", "#25c7ff", "#eaff7c"], copy: "A luminous identity built from refracted color, slow orbital movement and a pulse that changes with every encounter." },
-  { slug: "soft-static", title: "Soft Static", year: "2026", type: "Title sequence", role: "Design / Type / Motion", imageFile: "./assets/02.jpg", colors: ["#ff4f3b", "#ff9a65", "#16131d", "#f6eee8"], copy: "An opening sequence where broadcast noise behaves like fabric: stretching, folding and briefly revealing the title beneath." },
-  { slug: "glass-house", title: "Glass House", year: "2025", type: "Digital campaign", role: "Art direction / CGI", imageFile: "./assets/03.jpg", colors: ["#e9eff4", "#8a7dff", "#31325f", "#ffffff"], copy: "A study in transparent architecture and impossible reflections, made for a series of looping digital installations." },
-  { slug: "signal-zero", title: "Signal Zero", year: "2025", type: "Visual system", role: "Direction / Generative design", imageFile: "./assets/04.jpg", colors: ["#071728", "#005dff", "#ffdc38", "#54fff3"], copy: "A modular image system that translates live data into bands of color, interruption and accelerating light." },
-  { slug: "still-moving", title: "Still Moving", year: "2025", type: "Film titles", role: "Creative direction / Motion", imageFile: "./assets/05.jpg", colors: ["#f3cd4f", "#f56d2f", "#1b1511", "#f7f0df"], copy: "A quiet set of titles suspended between a still photograph and a moving memory, paced around tiny shifts in light." },
-  { slug: "parallel-bloom", title: "Parallel Bloom", year: "2024", type: "Experimental film", role: "Concept / Direction", imageFile: "./assets/06.jpg", colors: ["#101014", "#fe5bac", "#9567ff", "#70ffd1"], copy: "Synthetic flowers grow in parallel simulations, sharing color and rhythm while never repeating the same form." },
-  { slug: "open-circuit", title: "Open Circuit", year: "2024", type: "Brand film", role: "Design / Animation", imageFile: "./assets/07.jpg", colors: ["#00bed0", "#04191d", "#f4ff75", "#ffffff"], copy: "A kinetic portrait of creative exchange, assembled from charged lines, collisions and sudden moments of calm." },
-  { slug: "echo-field", title: "Echo Field", year: "2024", type: "Spatial graphics", role: "Art direction / Motion", imageFile: "./assets/08.jpg", colors: ["#ded7ff", "#6054d9", "#121119", "#ff7660"], copy: "A responsive field of soft volumes that absorbs sound and returns it as slow, tactile movement." },
-  { slug: "low-tide", title: "Low Tide", year: "2023", type: "Installation film", role: "Direction / Edit", imageFile: "./assets/09.jpg", colors: ["#133b45", "#e4f7df", "#f4a261", "#092228"], copy: "A slow study of a shoreline where each frame arrives with the rhythm of an incoming tide." },
-  { slug: "chromatic-air", title: "Chromatic Air", year: "2023", type: "Brand world", role: "Design / Motion", imageFile: "./assets/10.jpg", colors: ["#37114c", "#ff6eaf", "#9fffe1", "#161021"], copy: "A breathing palette for a brand world built from color, space and small changes in pressure." },
+  { slug: "afterlight", title: "Afterlight", year: "2026", type: "Motion identity", role: "Direction / Motion", copy: "A luminous identity built from refracted color, slow orbital movement and a pulse that changes with every encounter." },
+  { slug: "soft-static", title: "Soft Static", year: "2026", type: "Title sequence", role: "Design / Type / Motion", copy: "An opening sequence where broadcast noise behaves like fabric: stretching, folding and briefly revealing the title beneath." },
+  { slug: "glass-house", title: "Glass House", year: "2025", type: "Digital campaign", role: "Art direction / CGI", copy: "A study in transparent architecture and impossible reflections, made for a series of looping digital installations." },
+  { slug: "signal-zero", title: "Signal Zero", year: "2025", type: "Visual system", role: "Direction / Generative design", copy: "A modular image system that translates live data into bands of color, interruption and accelerating light." },
+  { slug: "still-moving", title: "Still Moving", year: "2025", type: "Film titles", role: "Creative direction / Motion", copy: "A quiet set of titles suspended between a still photograph and a moving memory, paced around tiny shifts in light." },
+  { slug: "parallel-bloom", title: "Parallel Bloom", year: "2024", type: "Experimental film", role: "Concept / Direction", copy: "Synthetic flowers grow in parallel simulations, sharing color and rhythm while never repeating the same form." },
+  { slug: "open-circuit", title: "Open Circuit", year: "2024", type: "Brand film", role: "Design / Animation", copy: "A kinetic portrait of creative exchange, assembled from charged lines, collisions and sudden moments of calm." },
+  { slug: "echo-field", title: "Echo Field", year: "2024", type: "Spatial graphics", role: "Art direction / Motion", copy: "A responsive field of soft volumes that absorbs sound and returns it as slow, tactile movement." },
+  { slug: "low-tide", title: "Low Tide", year: "2023", type: "Installation film", role: "Direction / Edit", copy: "A slow study of a shoreline where each frame arrives with the rhythm of an incoming tide." },
+  { slug: "chromatic-air", title: "Chromatic Air", year: "2023", type: "Brand world", role: "Design / Motion", copy: "A breathing palette for a brand world built from color, space and small changes in pressure." },
 ];
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const imageRevision = Date.now();
+const imageSources = projects.map((_, index) => `./assets/${String(index + 1).padStart(2, "0")}.jpg?v=${imageRevision}`);
 const helixProjects = [...projects, ...projects];
 const spiralView = document.querySelector("#spiral-view");
 const canvas = document.querySelector("#spiral-canvas");
@@ -308,8 +309,7 @@ const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 const textureLoader = new THREE.TextureLoader();
 const cardMeshes = [];
-const textureCanvases = [];
-const projectImages = new Map();
+const placeholderImages = [];
 let activeIndex = 0;
 let hoveredMesh = null;
 let pressedMesh = null;
@@ -325,62 +325,39 @@ let touchVelocityX = 0;
 let touchMoved = false;
 let currentProject = null;
 
-function placeholderCanvas(project, index) {
+function placeholderCanvas(index) {
   const art = document.createElement("canvas");
   art.width = 960;
   art.height = 540;
   const ctx = art.getContext("2d");
-  const [base, a, b, c] = project.colors;
-  ctx.fillStyle = base;
+  ctx.fillStyle = "#171717";
   ctx.fillRect(0, 0, art.width, art.height);
-  const glow = ctx.createRadialGradient(510, 260, 0, 510, 260, 620);
-  glow.addColorStop(0, `${a}d9`);
-  glow.addColorStop(0.5, `${b}77`);
-  glow.addColorStop(1, `${base}00`);
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, art.width, art.height);
-  ctx.save();
-  ctx.translate(480, 270);
-  ctx.rotate(index * 0.3);
-  ctx.globalCompositeOperation = "screen";
-  for (let i = 0; i < 6; i += 1) {
-    ctx.strokeStyle = i % 2 ? `${c}aa` : `${a}bb`;
-    ctx.lineWidth = 16 - i * 1.5;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 88 + i * 50, 34 + i * 23, i * 0.22, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-  ctx.restore();
-  ctx.globalAlpha = 0.18;
-  ctx.fillStyle = "#fff";
-  for (let y = 0; y < art.height; y += 10) ctx.fillRect(0, y, art.width, 1);
-  ctx.globalAlpha = 1;
+  ctx.strokeStyle = "#444";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(3, 3, art.width - 6, art.height - 6);
+  ctx.fillStyle = "#bcbcbc";
+  ctx.font = "700 72px Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(`${String(index + 1).padStart(2, "0")}.jpg`, art.width / 2, art.height / 2);
   return art;
 }
 
 function makeTexture(project, index) {
-  const art = placeholderCanvas(project, index);
-  textureCanvases[index] = art;
+  const art = placeholderCanvas(index);
+  placeholderImages[index] = art.toDataURL("image/jpeg", 0.88);
   const texture = new THREE.CanvasTexture(art);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
-  if (!project.imageFile) return texture;
-  textureLoader.load(project.imageFile, (loaded) => {
+  textureLoader.load(imageSources[index], (loaded) => {
     loaded.colorSpace = THREE.SRGBColorSpace;
     loaded.minFilter = THREE.LinearFilter;
     loaded.magFilter = THREE.LinearFilter;
-    projectImages.set(project.slug, loaded);
     cardMeshes.filter((item) => item.userData.project === project).forEach((mesh) => {
       mesh.material.uniforms.uTexture.value = loaded;
       mesh.material.uniforms.uImageSizes.value.set(loaded.image.naturalWidth || loaded.image.width, loaded.image.naturalHeight || loaded.image.height);
     });
-    document.querySelectorAll(`.list-card[data-project="${project.slug}"] img`).forEach((image) => {
-      image.src = project.imageFile;
-    });
-    if (currentProject === project) detailImage.src = project.imageFile;
-  }, undefined, () => {
-    // Keep the generated placeholder until the numbered file is uploaded.
   });
   return texture;
 }
@@ -460,7 +437,7 @@ const fragmentShader = `
   }
 `;
 
-const projectTextures = projects.map((project, index) => makeTexture(project, index));
+const projectTextures = projects.map(makeTexture);
 const panelGeometry = new THREE.PlaneGeometry(1, 1, 8, 8);
 helixProjects.forEach((project, index) => {
   const projectIndex = index % projects.length;
@@ -487,17 +464,15 @@ helixProjects.forEach((project, index) => {
   cardMeshes.push(mesh);
 });
 
-function makeListImage(project, index) {
-  if (projectImages.has(project.slug)) return project.imageFile;
-  return textureCanvases[index].toDataURL("image/jpeg", 0.88);
-}
-
 projects.forEach((project, index) => {
   const button = document.createElement("button");
   button.className = "list-card";
   button.type = "button";
   button.dataset.project = project.slug;
-  button.innerHTML = `<img src="${makeListImage(project, index)}" alt="" /><span><strong>${project.title}</strong><small>${String(index + 1).padStart(2, "0")} / ${project.year}</small></span>`;
+  button.innerHTML = `<img src="${imageSources[index]}" alt="" /><span><strong>${project.title}</strong><small>${String(index + 1).padStart(2, "0")} / ${project.year}</small></span>`;
+  button.querySelector("img").addEventListener("error", (event) => {
+    event.currentTarget.src = placeholderImages[index];
+  }, { once: true });
   button.addEventListener("click", () => openProject(project, null));
   listView.append(button);
 });
@@ -597,7 +572,11 @@ function setDetailContent(project) {
   document.querySelector("#detail-year").textContent = project.year;
   document.querySelector("#detail-role").textContent = project.role;
   document.querySelector("#detail-count").textContent = `${String(index + 1).padStart(2, "0")} / ${String(projects.length).padStart(2, "0")}`;
-  detailImage.src = makeListImage(project, index);
+  detailImage.src = imageSources[index];
+  detailImage.onerror = () => {
+    detailImage.onerror = null;
+    detailImage.src = placeholderImages[index];
+  };
   detailImage.alt = project.title;
   detailImage.hidden = false;
   document.title = `${project.title} - Polyphase`;

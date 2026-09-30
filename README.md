@@ -9,15 +9,17 @@ Install the **Live Server** extension if you want a one-click local preview, the
 
 ## Replace project images
 
-图片替换位置就是项目里的 `assets/` 文件夹。10 个项目已经按顺序预留好了文件名，不需要再改代码。
+图片替换位置就是项目里的 `assets/` 文件夹。页面只认这一组固定文件名，不需要改代码：
 
 1. 把第一张图命名为 `01.jpg`，放进 `assets/`。
 2. 第二张命名为 `02.jpg`，依次到 `10.jpg`。
-3. 刷新网页，页面会自动读取已经上传的编号图片；还没上传的编号继续显示占位图。
+3. 刷新网页，页面会自动读取对应编号图片；缺少的编号会显示同编号占位图。
 
 编号对应关系是：`01.jpg` = Afterlight，`02.jpg` = Soft Static，`03.jpg` = Glass House，一直到 `10.jpg` = Chromatic Air。
 
-同一张图片会自动显示在螺旋卡片、List 列表和项目详情页。
+对应关系由数组位置决定：第 1 个项目永远读取 `01.jpg`，第 2 个项目永远读取 `02.jpg`，依次到第 10 个项目。相同文件会显示在螺旋卡片、List 列表和项目详情页。
+
+每次页面打开都会给图片请求加新的版本参数，所以替换 GitHub 上的图片后，刷新页面不会继续使用旧缓存。
 
 ## Edit content
 
@@ -43,10 +45,9 @@ GitHub Pages is available for public repositories on GitHub Free. Private-reposi
 
 The constants near the top of `app.js` and the `syncPanels()` function contain the main controls:
 
-- `radiusX`: horizontal width of the spiral.
-- `radiusZ`: depth of the spiral.
-- `spacing`: vertical distance between cards.
-- `angleStep`: rotation between consecutive cards.
-- `scale`, `rotation` and the curved panel geometry: perspective and card orientation.
+- `CYLINDER_RADIUS`: horizontal and depth radius of the cylinder.
+- `VERTICAL_SPACING`: vertical distance between cards.
+- `ANGLE_STEP`: rotation between consecutive cards.
+- `CARD_WIDTH`, `CARD_HEIGHT` and the shader geometry: card size and curvature.
 
 Wheel and drag sensitivity are near the bottom of `app.js` in the `wheel` and `pointermove` handlers.
