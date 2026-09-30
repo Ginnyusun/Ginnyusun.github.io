@@ -23,6 +23,7 @@ const videoCandidates = projects.map((_, index) => {
   const number = String(index + 1).padStart(2, "0");
   return ["mp4", "webm", "mov"].map((extension) => `./assets/${number}_演示视频.${extension}?v=${imageRevision}`);
 });
+const publishedVideoNumbers = new Set([5, 6, 10]);
 const helixProjects = [...projects, ...projects];
 const spiralView = document.querySelector("#spiral-view");
 const canvas = document.querySelector("#spiral-canvas");
@@ -367,7 +368,7 @@ function setProjectImage(image, index, candidateIndex = 0) {
 
 async function setProjectVideo(index, candidateIndex = 0) {
   const candidates = videoCandidates[index];
-  if (!detailVideo || !detailMedia || candidateIndex >= candidates.length) {
+  if (!detailVideo || !detailMedia || !publishedVideoNumbers.has(index + 1) || candidateIndex >= candidates.length) {
     if (detailVideo) {
       detailVideo.onerror = null;
       detailVideo.removeAttribute("src");
