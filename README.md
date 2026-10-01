@@ -2,7 +2,7 @@
 
 The spiral scene is rendered with the local Three.js files in `vendor/`.
 
-The spiral view uses a deep graphite background with low-contrast grid lines and soft spatial light. Project images are rendered from the original files; display-only brightness adjustment is applied in the spiral shader and does not rewrite the assets.
+The spiral view uses a cold silver and ice-blue glass-study background with translucent depth planes, soft cyan light, and fine grid lines. Project images are rendered from the original files; display-only brightness adjustment is applied in the spiral shader and does not rewrite the assets.
 
 ## Recommended editor
 

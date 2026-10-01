@@ -315,6 +315,7 @@ const CARD_HEIGHT = 1;
 const CYLINDER_RADIUS = 2;
 const VERTICAL_SPACING = 0.5;
 const ANGLE_STEP = 0.85;
+const SPIRAL_DIRECTION = -1;
 const centerIndex = Math.floor(helixProjects.length / 2);
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
@@ -566,8 +567,8 @@ function syncPanels() {
     let normalizedIndex = index - scrollOffset;
     normalizedIndex = ((normalizedIndex % helixProjects.length) + helixProjects.length) % helixProjects.length;
     const offset = normalizedIndex - centerIndex;
-    const y = offset * VERTICAL_SPACING - 0.8;
-    const angle = offset * ANGLE_STEP;
+    const y = SPIRAL_DIRECTION * offset * VERTICAL_SPACING - 0.8;
+    const angle = SPIRAL_DIRECTION * offset * ANGLE_STEP;
     const x = Math.cos(angle) * CYLINDER_RADIUS;
     const z = Math.sin(angle) * CYLINDER_RADIUS;
 
