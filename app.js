@@ -342,12 +342,12 @@ function placeholderCanvas(index) {
   art.width = 960;
   art.height = 540;
   const ctx = art.getContext("2d");
-  ctx.fillStyle = "#eeede9";
+  ctx.fillStyle = "#45484d";
   ctx.fillRect(0, 0, art.width, art.height);
-  ctx.strokeStyle = "#8b8984";
+  ctx.strokeStyle = "#aeb2b8";
   ctx.lineWidth = 2;
   ctx.strokeRect(3, 3, art.width - 6, art.height - 6);
-  ctx.fillStyle = "#252321";
+  ctx.fillStyle = "#f5f6f7";
   ctx.font = "700 72px Arial, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -416,6 +416,8 @@ function loadProjectTexture(project, index, candidateIndex = 0) {
     loaded.colorSpace = THREE.SRGBColorSpace;
     loaded.minFilter = THREE.LinearFilter;
     loaded.magFilter = THREE.LinearFilter;
+    // Keep fast-loading textures so cards created a moment later still receive them.
+    projectTextures[index] = loaded;
     cardMeshes.filter((item) => item.userData.project === project).forEach((mesh) => {
       mesh.material.uniforms.uTexture.value = loaded;
       mesh.material.uniforms.uImageSizes.value.set(loaded.image.naturalWidth || loaded.image.width, loaded.image.naturalHeight || loaded.image.height);
