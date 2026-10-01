@@ -2,7 +2,7 @@
 
 The spiral scene is rendered with the local Three.js files in `vendor/`.
 
-The light reference theme is generated in CSS: warm white paper, fine grid lines, vertical scan bands and restrained red accents. It does not use the reference screenshot as a page image.
+The spiral view uses a deep graphite background with low-contrast grid lines and soft spatial light. Project images are rendered from the original files; display-only brightness adjustment is applied in the spiral shader and does not rewrite the assets.
 
 ## Recommended editor
 
