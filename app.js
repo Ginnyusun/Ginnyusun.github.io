@@ -38,6 +38,8 @@ const menuToggle = document.querySelector("#menu-toggle");
 const aboutView = document.querySelector("#about-view");
 const liveRegion = document.querySelector("#live-region");
 const soundToggle = document.querySelector("#sound-toggle");
+const AUDIO_MASTER_LEVEL = 0.32;
+const MUSIC_LEVEL = 0.22;
 
 const audioState = {
   context: null,
@@ -53,6 +55,10 @@ const audioState = {
   pulseStep: 0,
   enabled: false,
   started: false,
+  starting: false,
+  suspendedForDetail: false,
+  resumeAfterDetail: false,
+  pauseTimer: null,
 };
 let lastHoverSoundAt = 0;
 let lastSpiralSoundAt = 0;
@@ -159,7 +165,8 @@ function updateSoundButton() {
   soundToggle.querySelector("span").textContent = audioState.enabled ? "\u266a" : "\u266b";
 }
 
-async function startProceduralAudio() {
+async function startProceduralAudio({ cue = true } = {}) {
+  if (audioState.starting) return;
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if (!AudioContextClass) {
     liveRegion.textContent = "Sound is not available in this browser";
@@ -167,6 +174,7 @@ async function startProceduralAudio() {
   }
 
   try {
+    audioState.starting = true;
     if (!audioState.context) {
       const context = new AudioContextClass();
       const master = context.createGain();
@@ -176,14 +184,14 @@ async function startProceduralAudio() {
       const feedback = context.createGain();
       const droneGain = context.createGain();
       const musicGain = context.createGain();
-      const musicElement = new Audio("./assets/ambient-pixabay.mp3");
+      const musicElement = new Audio("./assets/una-mattina.mp3?v=20261007");
 
       master.gain.value = 0.0001;
       master.connect(context.destination);
       musicElement.loop = true;
       musicElement.preload = "auto";
-      musicElement.volume = 0.9;
-      musicGain.gain.value = 0.9;
+      musicElement.volume = 1;
+      musicGain.gain.value = MUSIC_LEVEL;
       musicElement.crossOrigin = "anonymous";
       const musicSource = context.createMediaElementSource(musicElement);
       musicSource.connect(musicGain);
@@ -250,21 +258,34 @@ async function startProceduralAudio() {
       audioState.started = true;
     }
 
+    if (audioState.pauseTimer) {
+      window.clearTimeout(audioState.pauseTimer);
+      audioState.pauseTimer = null;
+    }
     const musicPlay = audioState.musicElement.play();
     await audioState.context.resume();
     await musicPlay;
+    if (audioState.suspendedForDetail) {
+      audioState.musicElement.pause();
+      audioState.starting = false;
+      return;
+    }
     const now = audioState.context.currentTime;
     audioState.master.gain.cancelScheduledValues(now);
     audioState.master.gain.setValueAtTime(Math.max(audioState.master.gain.value, 0.0001), now);
-    audioState.master.gain.linearRampToValueAtTime(0.44, now + 0.2);
+    audioState.master.gain.linearRampToValueAtTime(AUDIO_MASTER_LEVEL, now + 0.2);
     audioState.enabled = true;
+    audioState.starting = false;
     if (audioState.pulseTimer) window.clearInterval(audioState.pulseTimer);
     audioState.pulseTimer = null;
     updateSoundButton();
-    playTone(523.25, 0.28, 0.03, "sine", 783.99);
-    playTone(659.25, 0.36, 0.014, "triangle", 987.77);
+    if (cue) {
+      playTone(523.25, 0.28, 0.03, "sine", 783.99);
+      playTone(659.25, 0.36, 0.014, "triangle", 987.77);
+    }
     liveRegion.textContent = "Sound enabled";
   } catch (error) {
+    audioState.starting = false;
     audioState.enabled = false;
     updateSoundButton();
     liveRegion.textContent = "Sound could not be enabled";
@@ -274,6 +295,10 @@ async function startProceduralAudio() {
 
 function stopProceduralAudio() {
   if (!audioState.context || !audioState.master) return;
+  if (audioState.pauseTimer) {
+    window.clearTimeout(audioState.pauseTimer);
+    audioState.pauseTimer = null;
+  }
   const now = audioState.context.currentTime;
   audioState.master.gain.cancelScheduledValues(now);
   audioState.master.gain.setValueAtTime(Math.max(audioState.master.gain.value, 0.0001), now);
@@ -284,8 +309,36 @@ function stopProceduralAudio() {
     audioState.pulseTimer = null;
   }
   audioState.enabled = false;
+  audioState.suspendedForDetail = false;
+  audioState.resumeAfterDetail = false;
   updateSoundButton();
   liveRegion.textContent = "Sound muted";
+}
+
+function pauseAudioForDetail() {
+  if (audioState.suspendedForDetail) return;
+  audioState.resumeAfterDetail = audioState.enabled || audioState.starting;
+  audioState.suspendedForDetail = true;
+  if (!audioState.context || !audioState.master || !audioState.enabled) return;
+
+  const now = audioState.context.currentTime;
+  audioState.master.gain.cancelScheduledValues(now);
+  audioState.master.gain.setValueAtTime(Math.max(audioState.master.gain.value, 0.0001), now);
+  audioState.master.gain.linearRampToValueAtTime(0.0001, now + 0.24);
+  audioState.enabled = false;
+  updateSoundButton();
+  liveRegion.textContent = "Sound paused for project";
+  audioState.pauseTimer = window.setTimeout(() => {
+    if (audioState.suspendedForDetail && audioState.musicElement) audioState.musicElement.pause();
+    audioState.pauseTimer = null;
+  }, 260);
+}
+
+function resumeAudioAfterDetail() {
+  const shouldResume = audioState.resumeAfterDetail;
+  audioState.suspendedForDetail = false;
+  audioState.resumeAfterDetail = false;
+  if (shouldResume) startProceduralAudio({ cue: false });
 }
 
 function toggleProceduralAudio() {
@@ -294,7 +347,7 @@ function toggleProceduralAudio() {
 }
 
 function startAudioFromGesture(event) {
-  if (audioState.enabled || soundToggle.contains(event.target)) return;
+  if (audioState.enabled || audioState.starting || audioState.suspendedForDetail || soundToggle.contains(event.target)) return;
   startProceduralAudio();
 }
 
@@ -654,6 +707,7 @@ function setDetailContent(project) {
 
 function openProject(project, sourceMesh, updateHistory = true) {
   playClickSound();
+  pauseAudioForDetail();
   closeMenu();
   document.body.classList.add("detail-open");
   currentProject = project;
@@ -682,6 +736,7 @@ function closeProject(updateHistory = true) {
   document.title = "Polyphase - Motion Studio";
   if (updateHistory) history.replaceState({}, "", location.pathname);
   currentProject = null;
+  resumeAudioAfterDetail();
 }
 
 function openAbout(updateHistory = true) {

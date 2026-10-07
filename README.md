@@ -37,9 +37,9 @@ GitHub 普通仓库单个文件不能超过 100 MB。超过这个限制的视频
 
 ## Background music
 
-The page uses `assets/ambient-pixabay.mp3` as a looped background track. It is the track [Ambient Techno by alex-morgan](https://pixabay.com/music/beats-ambient-techno-601098/), marked by Pixabay as free to use under the [Pixabay Content License](https://pixabay.com/service/license-summary/). Keep the license page and attribution details with the project when publishing.
+The page uses the user-supplied `assets/una-mattina.mp3` as a looped background track. Keep the relevant permission or licence records with the project when publishing.
 
-To replace it, put another MP3 in `assets/` and change the `new Audio("./assets/ambient-pixabay.mp3")` path near the top of `app.js`.
+To replace it, put another MP3 in `assets/` and change the `new Audio("./assets/una-mattina.mp3")` path near the top of `app.js`.
 
 ## Publish on GitHub Pages
 

@@ -68,7 +68,7 @@ body[data-view="spiral"] .view-switch button.is-active { color: #22383f; }
 .site-header > * { pointer-events: auto; }
 body.detail-open .site-header { visibility: hidden; pointer-events: none; }
 .brand { justify-self: start; display: flex; align-items: center; gap: 10px; padding: 0; background: transparent; color: var(--ink); cursor: pointer; }
-.brand > span:last-child { font-size: 10px; font-weight: 700; }
+.brand > span:last-child { font-size: clamp(16px, 1.35vw, 21px); font-weight: 750; line-height: 1; }
 
 .view-switch { display: flex; align-items: center; gap: 11px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 2px; background: rgba(248, 247, 243, 0.74); backdrop-filter: blur(10px); }
 .view-switch button { padding: 3px; background: transparent; color: var(--muted); cursor: pointer; font-size: 14px; }
