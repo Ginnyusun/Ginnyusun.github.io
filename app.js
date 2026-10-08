@@ -559,6 +559,8 @@ const fragmentShader = `
     float alpha = 1.0 - smoothstep(0.0, 0.002, sdf);
     alpha *= smoothstep(0.1, 1.0, reveal);
     gl_FragColor = vec4(color.rgb, color.a * alpha);
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
   }
 `;
 
